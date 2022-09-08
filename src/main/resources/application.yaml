@@ -1,0 +1,16 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    generate-ddl: true
+    database: postgresql
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: zjh
+    password: abc123
+    url: jdbc:postgresql://localhost:5432/ecom
+server:
+  servlet:
+    context-path: /ecom
+  port: 8080
