@@ -14,3 +14,6 @@ server:
   servlet:
     context-path: /ecom
   port: 8080
+logging:
+  file:
+    name: /home/zjh/logs/ecom.log
