@@ -38,12 +38,12 @@ public class EmployeeController {
     }
 
     @PostMapping("/simulate")
-    public ResponseEntity<Void> simulate(@RequestHeader int cycle) {
+    public ResponseEntity<Void> simulate(@RequestHeader int cycle,@RequestHeader int empId) {
         ThreadPoolExecutor executor = new ThreadPoolExecutor(2000, 5000,
                 2, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(5000));
         CountDownLatch latch = new CountDownLatch(1);
         for (int i = 0; i < cycle; i++) {
-            MultipleThreadingRunner runner = new MultipleThreadingRunner(employeeService, latch);
+            MultipleThreadingRunner runner = new MultipleThreadingRunner(employeeService, latch, empId);
             executor.execute(runner);
         }
         latch.countDown();

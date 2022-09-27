@@ -10,15 +10,17 @@ public class MultipleThreadingRunner implements Runnable{
     private EmployeeService employeeService;
     private CountDownLatch latch;
 
-    public MultipleThreadingRunner(EmployeeService employeeService, CountDownLatch latch) {
+    private int employeeId;
+
+    public MultipleThreadingRunner(EmployeeService employeeService, CountDownLatch latch, int employeeId) {
         this.employeeService = employeeService;
         this.latch = latch;
+        this.employeeId = employeeId;
     }
 
     @Override
     public void run() {
         Random random = new Random();
-        int employeeId = 5;
         int salary = random.nextInt(2000) - 1000;
         int delay = random.nextInt(10) * 1000;
         try {
