@@ -19,6 +19,6 @@ public class Employee extends BaseEntity{
     @Column
     private Integer salary;
     @Version
-    @Column(columnDefinition = "default 0")
+    @Column(columnDefinition = "int default 0")
     private Integer version;
 }
