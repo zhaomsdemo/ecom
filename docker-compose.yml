@@ -1,0 +1,17 @@
+version: '3.4'
+services:
+  app:
+    image: ecom:0.2
+    environment: 
+      postgres_host: ecom_db
+    ports:
+      - 18080:8080
+  db:
+    image: postgres
+    restart: always
+    container_name: ecom_db
+    hostname: ecom_db
+    environment:
+      POSTGRES_USER: zjh 
+      POSTGRES_PASSWORD: abc123
+      POSTGRES_DB: ecom
