@@ -10,6 +10,11 @@ spring:
     username: zjh
     password: abc123
     url: jdbc:postgresql://${postgres_host}:5432/ecom
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
 server:
   servlet:
     context-path: /ecom
