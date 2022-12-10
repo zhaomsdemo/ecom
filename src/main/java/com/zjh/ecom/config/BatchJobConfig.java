@@ -61,7 +61,7 @@ public class BatchJobConfig {
 
     @Bean
     public Step loadCustomerStep() {
-        return stepBuilderFactory.get("load-csv-step").<Customer, Customer>chunk(1)
+        return stepBuilderFactory.get("load-csv-step").<Customer, Customer>chunk(10)
                 .reader(itemReader())
                 .processor(customerProcessor())
                 .writer(itemWriter())
