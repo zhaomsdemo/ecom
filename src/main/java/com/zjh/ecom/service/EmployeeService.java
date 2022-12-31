@@ -8,4 +8,6 @@ public interface EmployeeService {
     Employee increaseEmployeeSalary(Integer employeeId , Integer salary, int delay) throws DataNotFoundException, InterruptedException;
 
     Employee createNewEmployee(Employee employee);
+
+    Employee getEmployeeById(Integer employeeId);
 }

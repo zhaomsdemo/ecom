@@ -37,6 +37,12 @@ public class EmployeeController {
         }
     }
 
+    @GetMapping("/{employeeId}")
+    public ResponseEntity<Employee> getEmployee(@PathVariable Integer employeeId) {
+        Employee employee = employeeService.getEmployeeById(employeeId);
+        return ResponseEntity.ok(employee);
+    }
+
     @PostMapping("/simulate")
     public ResponseEntity<Void> simulate(@RequestHeader int cycle,@RequestHeader int empId) {
         ThreadPoolExecutor executor = new ThreadPoolExecutor(2000, 5000,

@@ -40,4 +40,14 @@ public class DefaultEmployeeServiceImpl implements EmployeeService{
     public Employee createNewEmployee(Employee employee) {
         return employeeRepository.save(employee);
     }
+
+    @Override
+    public Employee getEmployeeById(Integer employeeId) {
+        Optional<Employee> optEmployee = employeeRepository.findById(employeeId);
+        if (optEmployee.isPresent()) {
+            return optEmployee.get();
+        }
+        String message = String.format("Employee Id %s Not Found", employeeId);
+        throw new DataNotFoundException(message);
+    }
 }
