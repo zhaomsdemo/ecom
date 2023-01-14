@@ -5,6 +5,7 @@ import com.zjh.ecom.exception.DataNotFoundException;
 import com.zjh.ecom.service.EmployeeService;
 import com.zjh.ecom.service.MultipleThreadingRunner;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @PostMapping
+    @SneakyThrows
     public ResponseEntity<Employee> register(@RequestBody Employee employee) {
         return ResponseEntity.ok(employeeService.createNewEmployee(employee));
     }

@@ -1,21 +1,35 @@
 package com.zjh.ecom.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zjh.ecom.dao.EmployeeRepository;
 import com.zjh.ecom.entity.Employee;
 import com.zjh.ecom.exception.DataNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @Service("defaultEmployeeService")
-@AllArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class DefaultEmployeeServiceImpl implements EmployeeService{
 
-    private final EmployeeRepository employeeRepository;
+    @NotNull
+    private EmployeeRepository employeeRepository;
+    @NotNull
+    private KafkaTemplate kafkaTemplate;
+    @NotNull
+    private ObjectMapper objectMapper;
+    @Value("${spring.kafka.topics.employee}")
+    private String employeeTopic;
 
     @Override
     @Transactional
@@ -37,8 +51,10 @@ public class DefaultEmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public Employee createNewEmployee(Employee employee) {
-        return employeeRepository.save(employee);
+    public Employee createNewEmployee(Employee employee) throws JsonProcessingException {
+        Employee newEmployee =  employeeRepository.save(employee);
+        kafkaTemplate.send(employeeTopic, objectMapper.writeValueAsString(newEmployee));
+        return newEmployee;
     }
 
     @Override
