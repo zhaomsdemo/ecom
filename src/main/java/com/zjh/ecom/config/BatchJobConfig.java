@@ -19,7 +19,7 @@ import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.kafka.KafkaItemWriter;
-import org.springframework.batch.item.support.CompositeItemWriter;
+import org.springframework.batch.item.kafka.builder.KafkaItemWriterBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +27,6 @@ import org.springframework.core.io.FileUrlResource;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
@@ -36,17 +35,13 @@ import java.util.List;
 @Slf4j
 public class BatchJobConfig {
 
-    @NotNull
-    private JobBuilderFactory jobBuilderFactory;
+    private final JobBuilderFactory jobBuilderFactory;
 
-    @NotNull
-    private StepBuilderFactory stepBuilderFactory;
+    private final StepBuilderFactory stepBuilderFactory;
 
-    @NotNull
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
 
-    @NotNull
-    private KafkaTemplate kafkaTemplate;
+    private final KafkaTemplate kafkaTemplate;
 
     @Value("${spring.kafka.topics.customer}")
     private String customerTopic;
@@ -77,11 +72,11 @@ public class BatchJobConfig {
     }
 
     @Bean
-    public KafkaItemWriter<Integer, Customer> kafkaItemWriter() {
-        KafkaItemWriter<Integer, Customer> writer = new KafkaItemWriter<>();
+    public KafkaItemWriter<String, Customer> kafkaItemWriter() {
+        KafkaItemWriter<String, Customer> writer = new KafkaItemWriter<>();
         kafkaTemplate.setDefaultTopic(customerTopic);
         writer.setKafkaTemplate(kafkaTemplate);
-        writer.setItemKeyMapper(Customer::getId);
+        writer.setItemKeyMapper(customer -> String.valueOf(customer.getId()));
         writer.setDelete(false);
         return writer;
     }
@@ -96,7 +91,7 @@ public class BatchJobConfig {
         return stepBuilderFactory.get("load-csv-step").<Customer, Customer>chunk(10)
                 .reader(itemReader())
                 .processor(customerProcessor())
-                .writer(repositoryItemWriter())
+                .writer(compositeWriter())
                 .build();
     }
 
